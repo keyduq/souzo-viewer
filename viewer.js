@@ -47,7 +47,7 @@ controls.addEventListener("change", render); // use if there is no animation loo
 controls.target.set(10, 20, -16);
 controls.update();
 //
-const loader = new GLTFLoader().setPath("/samples/");
+const loader = new GLTFLoader().setPath("https://cdn.jsdelivr.net/gh/keyduq/souzo-viewer@master/samples/");
 loader.load(
   "creeper_preview.glb",
   function (gltf) {
