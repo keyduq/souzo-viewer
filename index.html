@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script async src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"></script>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.144.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.144.0/examples/jsm/"
+      }
+    }
+  </script>
+  <title>Souzo3D: sample viewer</title>
+</head>
+<body>
+  <div class="product-vip__description">
+    <p>{__preview__}</p>
+  </div>
+  <script src="viewer.js" type="module"></script>
+</body>
+</html>
