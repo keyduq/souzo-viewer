@@ -11,10 +11,12 @@ element.innerHTML = element.innerHTML.replace(
   '<div id="souzo_viewer"></div>'
 );
 const container = document.getElementById("souzo_viewer");
+const width = element.clientWidth;
+const height = 500;
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setPixelRatio(window.devicePixelRatio);
-renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setSize(width, height);
 renderer.outputEncoding = THREE.sRGBEncoding;
 container.appendChild(renderer.domElement);
 
@@ -32,7 +34,7 @@ scene.add(grid);
 
 const camera = new THREE.PerspectiveCamera(
   40,
-  window.innerWidth / window.innerHeight,
+  width / height,
   1,
   2000
 );
@@ -65,18 +67,18 @@ loader.load(
 );
 
 window.addEventListener('resize', function () {
-  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.aspect = width / height;
   camera.updateProjectionMatrix();
 
-  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setSize(width, height);
   render();
 });
 
 // window.onresize = function () {
-//   camera.aspect = window.innerWidth / window.innerHeight;
+//   camera.aspect = width / height;
 //   camera.updateProjectionMatrix();
 
-//   renderer.setSize(window.innerWidth, window.innerHeight);
+//   renderer.setSize(width, height);
 //   render();
 // };
 
