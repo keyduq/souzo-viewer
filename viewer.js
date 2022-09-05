@@ -26,7 +26,7 @@ container.appendChild(renderer.domElement);
 const pmremGenerator = new THREE.PMREMGenerator(renderer);
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0xf2e6fc);
+scene.background = new THREE.Color(0xffffff);
 scene.environment = pmremGenerator.fromScene(new RoomEnvironment()).texture;
 
 const light = new THREE.DirectionalLight(0xffffff, 1);
