@@ -13,22 +13,32 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 
 const elements = document.getElementsByClassName("product-vip__description");
-let element = Array.from(elements).find((e) => e.offsetParent != null);
 let count = 0;
+let data;
 for (const ele of elements) {
   const id = `souzo_viewer_${count}`;
-  ele.innerHTML = ele.innerHTML.replace(
-    "<p>{__preview__}</p>",
-    `
-    <button 
-      class="button button--full background--primary background--primary-hover contrast_text--primary contrast_text--primary-hover uk-button uk-button-input border-radius" 
-      id="${id}_btn_open" type="button" onclick="showViewer('${id}')">
-      Ver modelo 3D
-    </button>
-    <div id="${id}_loading"></div>
-    <div id="${id}"></div>
-    `
-  );
+  const json = ele.textContent.substring(ele.textContent.indexOf('{__preview__}') + 13, ele.textContent.indexOf('{__endpreview__}') - 1);
+  data = JSON.parse(json);
+  const regex = /<p>{__preview__}<\/p>(.|\s)*{__endpreview__}<\/p>/g;
+  if (data.active === false) {
+    ele.innerHTML = ele.innerHTML.replace(
+      regex,
+      ''
+    );
+  } else {
+    ele.innerHTML = ele.innerHTML.replace(
+      regex,
+      `
+      <button 
+        class="button button--full background--primary background--primary-hover contrast_text--primary contrast_text--primary-hover uk-button uk-button-input border-radius" 
+        id="${id}_btn_open" type="button" onclick="showViewer('${id}')">
+        Ver modelo 3D
+      </button>
+      <div id="${id}_loading"></div>
+      <div id="${id}"></div>
+      `
+    );
+  }
   count++;
 }
 
@@ -36,8 +46,8 @@ window.showViewer = function (elementId) {
   const container = document.getElementById(elementId);
   const loading = document.getElementById(`${elementId}_loading`);
   const btnOpen = document.getElementById(`${elementId}_btn_open`);
-  const width = element.clientWidth;
-  const height = Math.min(element.clientWidth, window.innerHeight);
+  const width = container.clientWidth;
+  const height = Math.min(container.clientWidth, window.innerHeight);
 
   const renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setPixelRatio(window.devicePixelRatio);
@@ -68,8 +78,7 @@ window.showViewer = function (elementId) {
     "https://cdn.jsdelivr.net/gh/keyduq/souzo-viewer@master/samples/"
   );
   loader.load(
-    `${getSlug()}_preview.glb`,
-    // "creeper_preview.glb",
+    data.filename,
     function (gltf) {
 
       const model = gltf.scene;
@@ -145,7 +154,7 @@ function fitCameraToCenteredObject(camera, object, controls) {
   camera.top = 2 * maxSize;
   camera.right = 2 * maxSize;
   camera.near = 0.01;
-  camera.far = maxSize * 100;
+  camera.far = maxSize * 1000;
   // camera;
   camera.position.set(
     newPositionCamera.x,
