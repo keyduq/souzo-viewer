@@ -18,6 +18,7 @@ let data;
 for (const ele of elements) {
   const id = `souzo_viewer_${count}`;
   const json = ele.textContent.indexOf('{__endpreview__}') > 0 ? ele.textContent.substring(ele.textContent.indexOf('{__preview__}') + 13, ele.textContent.indexOf('{__endpreview__}') - 1).trim() : undefined;
+  console.log(json);
   data = json ? JSON.parse(json) : undefined;
   const regex = /<p>{__preview__}<\/p>(.|\s)*{__endpreview__}<\/p>/g;
   if (data?.active === false) {
