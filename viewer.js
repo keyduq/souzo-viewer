@@ -17,27 +17,42 @@ let count = 0;
 let data;
 for (const ele of elements) {
   const id = `souzo_viewer_${count}`;
-  const json = ele.textContent.substring(ele.textContent.indexOf('{__preview__}') + 13, ele.textContent.indexOf('{__endpreview__}') - 1);
-  data = JSON.parse(json);
+  const json = ele.textContent.indexOf('{__endpreview__}') > 0 ? ele.textContent.substring(ele.textContent.indexOf('{__preview__}') + 13, ele.textContent.indexOf('{__endpreview__}') - 1).trim() : undefined;
+  data = json ? JSON.parse(json) : undefined;
   const regex = /<p>{__preview__}<\/p>(.|\s)*{__endpreview__}<\/p>/g;
-  if (data.active === false) {
+  if (data?.active === false) {
     ele.innerHTML = ele.innerHTML.replace(
       regex,
       ''
     );
   } else {
-    ele.innerHTML = ele.innerHTML.replace(
-      regex,
-      `
-      <button 
-        class="button button--full background--primary background--primary-hover contrast_text--primary contrast_text--primary-hover uk-button uk-button-input border-radius" 
-        id="${id}_btn_open" type="button" onclick="showViewer('${id}')">
-        Ver modelo 3D
-      </button>
-      <div id="${id}_loading"></div>
-      <div id="${id}"></div>
-      `
-    );
+    if (data) {
+      ele.innerHTML = ele.innerHTML.replace(
+        regex,
+        `
+        <button 
+          class="button button--full background--primary background--primary-hover contrast_text--primary contrast_text--primary-hover uk-button uk-button-input border-radius" 
+          id="${id}_btn_open" type="button" onclick="showViewer('${id}')">
+          Ver modelo 3D
+        </button>
+        <div id="${id}_loading"></div>
+        <div id="${id}"></div>
+        `
+      );
+    } else {
+      ele.innerHTML = ele.innerHTML.replace(
+        '{__preview__}',
+        `
+        <button 
+          class="button button--full background--primary background--primary-hover contrast_text--primary contrast_text--primary-hover uk-button uk-button-input border-radius" 
+          id="${id}_btn_open" type="button" onclick="showViewer('${id}')">
+          Ver modelo 3D
+        </button>
+        <div id="${id}_loading"></div>
+        <div id="${id}"></div>
+        `
+      );
+    }
   }
   count++;
 }
@@ -78,7 +93,7 @@ window.showViewer = function (elementId) {
     "https://cdn.jsdelivr.net/gh/keyduq/souzo-viewer@master/samples/"
   );
   loader.load(
-    data.filename ?? getSlug(),
+    data?.filename ?? `${getSlug()}_preview.glb`,
     function (gltf) {
 
       const model = gltf.scene;
