@@ -5,15 +5,23 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 
 const elements = document.getElementsByClassName("product-vip__description");
-for (const ele of elements) {
-  ele.innerHTML = ele.innerHTML.replace(
-    "<p>{__preview__}</p>",
-    '<div id="souzo_viewer"></div>'
-  );
+let element = elements.find(e => e.offsetParent != null);
+
+if (!element) {
+  return;
 }
+
+element.innerHTML = element.innerHTML.replace(
+  "<p>{__preview__}</p>",
+  '<div id="souzo_viewer"></div>'
+);
 const container = document.getElementById("souzo_viewer");
 const width = element.clientWidth;
 const height = 500;
+
+if (!container) {
+  return;
+}
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setPixelRatio(window.devicePixelRatio);
@@ -40,10 +48,6 @@ const camera = new THREE.PerspectiveCamera(
   2000
 );
 camera.position.set(50, 200, 100);
-// camera.rotation.x = Math.PI * 0.4;
-// camera.rotation.y = Math.PI * 0.79;
-// camera.rotation.z = Math.PI * 0.84;
-// camera.rotation.set(-1, -0.79, -0.84);
 
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.addEventListener("change", render); // use if there is no animation loop
