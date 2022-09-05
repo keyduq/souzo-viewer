@@ -20,10 +20,13 @@ for (const ele of elements) {
   ele.innerHTML = ele.innerHTML.replace(
     "<p>{__preview__}</p>",
     `
-    <button id="${id}_btn_open" type="button" onclick="showViewer('${id}')">Ver modelo 3D</button>
+    <button 
+      class="button button--full background--primary background--primary-hover contrast_text--primary contrast_text--primary-hover uk-button uk-button-input border-radius" 
+      id="${id}_btn_open" type="button" onclick="showViewer('${id}')">
+      Ver modelo 3D
+    </button>
     <div id="${id}_loading"></div>
     <div id="${id}"></div>
-    <button style="display: none;" id="${id}_btn_close" type="button" onclick="closeViewer('${id}')">Cerrar modelo</button>
     `
   );
   count++;
@@ -33,7 +36,6 @@ window.showViewer = function (elementId) {
   const container = document.getElementById(elementId);
   const loading = document.getElementById(`${elementId}_loading`);
   const btnOpen = document.getElementById(`${elementId}_btn_open`);
-  const btnClose = document.getElementById(`${elementId}_btn_close`);
   const width = element.clientWidth;
   const height = Math.min(element.clientWidth, window.innerHeight);
 
@@ -69,14 +71,6 @@ window.showViewer = function (elementId) {
     `${getSlug()}_preview.glb`,
     // "creeper_preview.glb",
     function (gltf) {
-      // gltf.scene.position.z = 10;
-
-      // const planeGeometry = new THREE.PlaneGeometry(500, 500, 8, 8);
-      // const planeMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
-      // const plane = new THREE.Mesh(planeGeometry, planeMaterial);
-      // plane.receiveShadow = true;
-      // plane.rotateX(- Math.PI / 2)
-      // scene.add(plane);
 
       const model = gltf.scene;
 
@@ -87,21 +81,22 @@ window.showViewer = function (elementId) {
           fitCameraToCenteredObject(camera, node, controls);
           controls.addEventListener("change", () => {
             onResize(renderer, scene, camera, width, height);
-          }); // use if there is no animation loop
+          });
         }
       });
       scene.add(model);
 
       render(renderer, scene, camera);
       btnOpen.style.display = "none";
-      btnClose.style.display = "block";
       loading.innerHTML = "";
     },
     function (xhr) {
+      btnOpen.style.display = "none";
       loading.innerHTML = "Loading...";
       console.log(xhr.loaded + " loaded.");
     },
     function (err) {
+      btnOpen.style.display = "display";
       console.error(err);
     }
   );
