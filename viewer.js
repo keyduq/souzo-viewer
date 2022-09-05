@@ -1,3 +1,11 @@
+/**
+ * @preserve
+ * @file Script to add a GLB object viewer to Empretienda
+ * @author Keyvin Duque <thkeyduq@gmail.com>
+ * @license MIT
+ * @copyright Keyvin Duque 2022
+ * @endpreserve
+ */
 import * as THREE from "three";
 
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
@@ -10,9 +18,10 @@ let count = 0;
 for (const ele of elements) {
   const id = `souzo_viewer_${count}`;
   ele.innerHTML = ele.innerHTML.replace(
-    '<p>{__preview__}</p>',
+    "<p>{__preview__}</p>",
     `
     <button id="${id}_btn_open" type="button" onclick="showViewer('${id}')">Ver modelo 3D</button>
+    <div id="${id}_loading"></div>
     <div id="${id}"></div>
     <button style="display: none;" id="${id}_btn_close" type="button" onclick="closeViewer('${id}')">Cerrar modelo</button>
     `
@@ -20,10 +29,11 @@ for (const ele of elements) {
   count++;
 }
 
-window.showViewer = function(elementId) {
+window.showViewer = function (elementId) {
   const container = document.getElementById(elementId);
-  const btnOpen = document.getElementById(`${elementId}_btn_open`)
-  const btnClose = document.getElementById(`${elementId}_btn_close`)
+  const loading = document.getElementById(`${elementId}_loading`);
+  const btnOpen = document.getElementById(`${elementId}_btn_open`);
+  const btnClose = document.getElementById(`${elementId}_btn_close`);
   const width = element.clientWidth;
   const height = Math.min(element.clientWidth, window.innerHeight);
 
@@ -47,21 +57,17 @@ window.showViewer = function(elementId) {
   light.shadow.camera.far = 1000;
   scene.add(light);
 
-  const camera = new THREE.PerspectiveCamera(30, width / height, 1, 2000);
-  camera.position.set(-160, 110, 90);
+  const camera = new THREE.PerspectiveCamera(30, width / height, 1, 1000);
+  // camera.position.set(-160, 110, 90);
+  // camera.position.set(0, 0, 0);
 
-  const controls = new OrbitControls(camera, renderer.domElement);
-  controls.addEventListener("change", () => {
-    onResize(renderer, scene, camera, width, height);
-  }); // use if there is no animation loop
-  controls.target.set(0, 30, 0);
-  controls.update();
   //
   const loader = new GLTFLoader().setPath(
     "https://cdn.jsdelivr.net/gh/keyduq/souzo-viewer@master/samples/"
   );
   loader.load(
     `${getSlug()}_preview.glb`,
+    // "creeper_preview.glb",
     function (gltf) {
       // gltf.scene.position.z = 10;
 
@@ -72,32 +78,43 @@ window.showViewer = function(elementId) {
       // plane.rotateX(- Math.PI / 2)
       // scene.add(plane);
 
-      gltf.scene.traverse(function (node) {
+      const model = gltf.scene;
+
+      model.traverse(function (node) {
         if (node.isMesh) {
           node.castShadow = true;
+          const controls = new OrbitControls(camera, renderer.domElement);
+          fitCameraToCenteredObject(camera, node, controls);
+          controls.addEventListener("change", () => {
+            onResize(renderer, scene, camera, width, height);
+          }); // use if there is no animation loop
         }
       });
-      scene.add(gltf.scene);
+      scene.add(model);
 
       render(renderer, scene, camera);
       btnOpen.style.display = "none";
       btnClose.style.display = "block";
+      loading.innerHTML = "";
     },
-    undefined,
+    function (xhr) {
+      loading.innerHTML = "Loading...";
+      console.log(xhr.loaded + " loaded.");
+    },
     function (err) {
       console.error(err);
     }
   );
-}
+};
 
-window.closeViewer = function(elementId) {
-  const container = document.getElementById(elementId);
-  const btnOpen = document.getElementById(`${elementId}_btn_open`)
-  const btnClose = document.getElementById(`${elementId}_btn_close`)
-  container.innerHTML = '';
-  btnOpen.style.display = 'block';
-  btnClose.style.display = 'none';
-}
+window.closeViewer = function (elementId) {
+  const container = document.etElementById(elementId);
+  const btnOpen = document.getElementById(`${elementId}_btn_open`);
+  const btnClose = document.getElementById(`${elementId}_btn_close`);
+  container.innerHTML = "";
+  btnOpen.style.display = "block";
+  btnClose.style.display = "none";
+};
 
 function render(renderer, scene, camera) {
   renderer.render(scene, camera);
@@ -113,5 +130,36 @@ function onResize(renderer, scene, camera, width, height) {
 
 function getSlug() {
   const path = window.location.pathname;
-  return path.substring(path.lastIndexOf('/') + 1);
+  return path.substring(path.lastIndexOf("/") + 1);
+}
+("");
+
+function fitCameraToCenteredObject(camera, object, controls) {
+  const boundingBox = new THREE.Box3();
+
+  boundingBox.setFromObject(object);
+
+  const center = boundingBox.getCenter(new THREE.Vector3());
+  const size = boundingBox.getSize(new THREE.Vector3());
+  const maxSize = Math.max(size.x, size.y, size.z);
+  console.log(maxSize);
+  let newPositionCamera = new THREE.Vector3(maxSize, maxSize, maxSize);
+  camera.zoom = 0.5;
+  camera.left = -(2 * maxSize);
+  camera.bottom = -(2 * maxSize);
+  camera.top = 2 * maxSize;
+  camera.right = 2 * maxSize;
+  camera.near = 0.01;
+  camera.far = maxSize * 100;
+  // camera;
+  camera.position.set(
+    newPositionCamera.x,
+    newPositionCamera.y,
+    newPositionCamera.z
+  );
+  camera.lookAt(0, 0, 0);
+  camera.updateProjectionMatrix();
+  
+  controls.target.set(center.x, center.y, center.z);
+  controls.update();
 }
