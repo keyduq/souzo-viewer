@@ -1,9 +1,9 @@
 const threeVersion = "0.144.0";
-import * as THREE from "three";
+import * as THREE from "https://unpkg.com/three@0.144.0/build/three.module.js";
 
-import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+import { GLTFLoader } from "https://unpkg.com/three@0.144.0/examples/jsm/loaders/GLTFLoader.js";
+import { OrbitControls } from "https://unpkg.com/three@0.144.0/examples/jsm/controls/OrbitControls.js";
+import { RoomEnvironment } from "https://unpkg.com/three@0.144.0/examples/jsm/environments/RoomEnvironment.js";
 
 const element = document.getElementsByClassName("product-vip__description")[0];
 element.innerHTML = element.innerHTML.replace(
