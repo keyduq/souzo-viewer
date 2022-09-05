@@ -5,7 +5,7 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 
 const elements = document.getElementsByClassName("product-vip__description");
-let element = elements.find(e => e.offsetParent != null)
+let element = Array.from(elements).find(e => e.offsetParent != null)
 
 element.innerHTML = element.innerHTML.replace(
   "<p>{__preview__}</p>",
