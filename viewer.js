@@ -78,7 +78,7 @@ window.showViewer = function (elementId) {
     "https://cdn.jsdelivr.net/gh/keyduq/souzo-viewer@master/samples/"
   );
   loader.load(
-    data.filename,
+    data.filename ?? getSlug(),
     function (gltf) {
 
       const model = gltf.scene;
