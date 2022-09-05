@@ -13,7 +13,7 @@ element.innerHTML = element.innerHTML.replace(
 );
 const container = document.getElementById("souzo_viewer");
 const width = element.clientWidth;
-const height = 500;
+const height = Math.min(element.clientWidth, window.innerHeight);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setPixelRatio(window.devicePixelRatio);
@@ -24,40 +24,31 @@ container.appendChild(renderer.domElement);
 const pmremGenerator = new THREE.PMREMGenerator(renderer);
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0xffffff);
+scene.background = new THREE.Color(0xf2e6fc);
 scene.environment = pmremGenerator.fromScene(new RoomEnvironment()).texture;
 
-const grid = new THREE.GridHelper(1000, 20, 0x919191, 0x919191);
-grid.material.opacity = 0.5;
-grid.material.depthWrite = false;
-grid.material.transparent = true;
-scene.add(grid);
-
 const camera = new THREE.PerspectiveCamera(
-  40,
+  30,
   width / height,
   1,
   2000
 );
-camera.position.set(50, 200, 100);
+camera.position.set(-160, 110, 90);
 
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.addEventListener("change", render); // use if there is no animation loop
-controls.target.set(10, 20, -16);
+controls.target.set(0, 30, 0);
 controls.update();
 //
 const loader = new GLTFLoader().setPath("https://cdn.jsdelivr.net/gh/keyduq/souzo-viewer@master/samples/");
 loader.load(
   "creeper_preview.glb",
   function (gltf) {
-    // gltf.scene.rotation.y = 8;
+    // gltf.scene.position.z = 10;
     scene.add(gltf.scene);
     render();
   },
-  function (xhr) {
-    // loading
-    console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
-  },
+  undefined,
   function (err) {
     console.error(err);
   }
@@ -71,14 +62,7 @@ window.addEventListener('resize', function () {
   render();
 });
 
-// window.onresize = function () {
-//   camera.aspect = width / height;
-//   camera.updateProjectionMatrix();
-
-//   renderer.setSize(width, height);
-//   render();
-// };
-
 function render() {
+  console.log(camera.position);
   renderer.render(scene, camera);
 }
