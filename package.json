@@ -1,0 +1,23 @@
+{
+  "name": "souzo-viewer",
+  "version": "0.2.1",
+  "description": "",
+  "main": "viewer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "terser ./viewer.js --compress ecma=2015 --mangle --comments --source-map -o dist/viewer.min.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/keyduq/souzo-viewer.git"
+  },
+  "author": "Keyvin Duque <thkeyduq@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/keyduq/souzo-viewer/issues"
+  },
+  "homepage": "https://github.com/keyduq/souzo-viewer#readme",
+  "devDependencies": {
+    "terser": "^5.15.0"
+  }
+}

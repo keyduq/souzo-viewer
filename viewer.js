@@ -1,10 +1,8 @@
 /**
- * @preserve
  * @file Script to add a GLB object viewer to Empretienda
  * @author Keyvin Duque <thkeyduq@gmail.com>
  * @license MIT
  * @copyright Keyvin Duque 2022
- * @endpreserve
  */
 import * as THREE from "three";
 
@@ -152,7 +150,6 @@ function getSlug() {
   const path = window.location.pathname;
   return path.substring(path.lastIndexOf("/") + 1);
 }
-("");
 
 function fitCameraToCenteredObject(camera, object, controls) {
   const boundingBox = new THREE.Box3();
