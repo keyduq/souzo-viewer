@@ -4,11 +4,13 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 
-const element = document.getElementsByClassName("product-vip__description")[0];
-element.innerHTML = element.innerHTML.replace(
-  "<p>{__preview__}</p>",
-  '<div id="souzo_viewer"></div>'
-);
+const elements = document.getElementsByClassName("product-vip__description");
+for (const ele of elements) {
+  ele.innerHTML = ele.innerHTML.replace(
+    "<p>{__preview__}</p>",
+    '<div id="souzo_viewer"></div>'
+  );
+}
 const container = document.getElementById("souzo_viewer");
 const width = element.clientWidth;
 const height = 500;
